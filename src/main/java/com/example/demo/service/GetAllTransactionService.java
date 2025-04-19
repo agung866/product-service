@@ -30,7 +30,7 @@ public class GetAllTransactionService {
 //        var productIds = trx.stream()
 //                .map(Transaction::getProductId)
 //                .distinct().toList();
-
+//
 //        var product = productViewRepository.findAllByProductIdIn(productIds);
 //        Map<Long, Product> toMap = product.stream()
 //                .collect(Collectors.toMap(Product::getProductId, Function.identity()));
