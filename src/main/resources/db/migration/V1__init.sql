@@ -1,5 +1,6 @@
-CREATE TABLE "transaction" (
-       transaction_id SERIAL PRIMARY KEY,
+CREATE TABLE schema_transaction."transaction" (
+       id SERIAL PRIMARY KEY,
+       transaction_id VARCHAR(255) NOT NULL UNIQUE,
        email VARCHAR(255) NOT NULL,
        product_id BIGINT NOT NULL,
        quantity INT ,

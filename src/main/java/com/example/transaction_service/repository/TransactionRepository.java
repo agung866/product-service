@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @Repository
 public interface TransactionRepository extends JpaRepository<Transaction,String> {
-    Optional<Transaction> findByTransactionId(Long transactionId);
+    Optional<Transaction> findByTransactionId(String id);
 
 
     @Query(value = "select t from transaction where created_at between :starDate and :endDate AND status = :status",nativeQuery = true)

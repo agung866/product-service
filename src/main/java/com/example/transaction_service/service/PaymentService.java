@@ -17,7 +17,7 @@ public class PaymentService {
     private final KafkaTemplate<String, SuccessPaymentEvent> kafkaTemplate;
     @Value("${spring.kafka.topic.payment-success}")
     private String paymentTopic;
-    public void execute(Long transactionId){
+    public void execute(String transactionId){
         transactionRepository.findByTransactionId(transactionId)
                 .map(transaction -> {
                     if(transaction.getStatus().equalsIgnoreCase("PAID")){
@@ -28,7 +28,7 @@ public class PaymentService {
                     kafkaTemplate.send(paymentTopic,
                             String.valueOf(transactionId),
                             SuccessPaymentEventBuilder.builder()
-                                    .orderId(transactionId)
+                                    .trxId(transactionId)
                                     .productId(transaction.getProductId())
                                     .qty(transaction.getQuantity())
                                     .build());

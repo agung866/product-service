@@ -29,7 +29,7 @@ public class OrderController {
     }
 
     @PostMapping("/update-payment")
-    public void updatePayment(@RequestParam Long transactionId) {
+    public void updatePayment(@RequestParam String transactionId) {
         paymentService.execute(transactionId);
     }
 

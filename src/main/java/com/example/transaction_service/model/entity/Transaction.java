@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 
 @Entity
-@Table(name = "transaction", schema = "schema_product")
+@Table(name = "transaction")
 @Getter
 @Setter
 @Builder
@@ -18,7 +18,9 @@ public class Transaction {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long transactionId;
+    private Long id;
+
+    private String transactionId;
 
     private String email;
 

@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 
 @RecordBuilder
 public record GetAllTransactionResponse (
-        Long transactionId,
+        String transactionId,
         Long productId,
         String productName,
         String email,

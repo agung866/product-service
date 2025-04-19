@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 
 
 import java.math.BigDecimal;
+import java.util.UUID;
+import java.util.concurrent.atomic.AtomicReference;
 
 
 @Service
@@ -23,28 +25,36 @@ public class OrderService {
     TransactionRepository transactionRepository;
 
     public OrderResponse execute(OrderRequest request) {
-        return productViewRepository.findByProductId(request.productId()).map(product1 -> {
-            if (product1.getStock() < request.quantity()) {
-                throw new BadRequestException("Stock yang yang tersedia kurang dari yang anda minta");
-            }
-            var totalPrice = new BigDecimal(request.quantity()).multiply(product1.getPrice());
-            Transaction transaction = Transaction.builder()
-                    .email(request.email())
-                    .quantity(request.quantity())
-                    .productId(request.productId())
-                    .paymentMethod(request.paymentMethod())
-                    .status("UNPAID")
-                    .totalPrice(totalPrice)
-                    .build();
-            transactionRepository.save(transaction);
-            return OrderResponseBuilder.builder()
-                    .email(request.email())
-                    .quantity(request.quantity())
-                    .totalPrice(totalPrice)
-                    .productId(request.productId())
-                    .paymentMethod("Transfer")
-                    .statusPayment("UNPAID")
-                    .build();
-        }).orElseThrow(() -> new DataNotFoundException("Product yang anda cari tidak ada"));
+        AtomicReference<String> trxId = new AtomicReference<>("");
+        var statusPayment = "UNPAID";
+        var total=request.orderItemList().stream()
+                .map(orderItem -> {
+                    var product = productViewRepository.findByProductId(orderItem.productId()).orElseThrow(() -> new DataNotFoundException("Data Product Tidak ada"));
+                    if (product.getStock() < orderItem.quantity()) {
+                        throw new BadRequestException("Stock yang yang tersedia kurang dari yang anda minta");
+                    }
+                trxId.set("TRX" + UUID.randomUUID());
+                    var totalPrice = new BigDecimal(orderItem.quantity()).multiply(product.getPrice());
+
+                    Transaction transaction = Transaction.builder()
+                            .email(request.email())
+                            .transactionId(trxId.get())
+                            .paymentMethod(request.paymentMethod())
+                            .status(statusPayment)
+                            .totalPrice(totalPrice)
+                            .productId(product.getProductId())
+                            .quantity(orderItem.quantity())
+                            .build();
+                    transactionRepository.save(transaction);
+
+                    return totalPrice;
+                }).reduce(BigDecimal.ZERO, BigDecimal::add);
+        return OrderResponseBuilder.builder()
+                .TransactionId(trxId.get())
+                .email(request.email())
+                .statusPayment(statusPayment)
+                .paymentMethod(request.paymentMethod())
+                .totalPrice(total)
+                .build();
     }
 }

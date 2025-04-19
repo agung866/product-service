@@ -6,10 +6,8 @@ import java.math.BigDecimal;
 
 @RecordBuilder
 public record OrderResponse(
-        Long orderId,
+        String TransactionId,
         String email,
-        Long productId,
-        Integer quantity,
         BigDecimal totalPrice,
         String paymentMethod,
         String statusPayment
