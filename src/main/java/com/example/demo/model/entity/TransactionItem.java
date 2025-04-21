@@ -28,8 +28,13 @@ public class TransactionItem {
 
     private BigDecimal totalPrice;
 
+    @Column(name = "created_at", insertable = false, updatable = false)
     private LocalDateTime createdAt;
+    @Column(name = "created_by", insertable = false, updatable = false)
     private String createdBy;
+    @Column(name = "updated_at", insertable = false, updatable = false)
     private LocalDateTime updatedAt;
+    @Column(name = "updated_by", insertable = false, updatable = false)
     private String updatedBy;
+
 }

@@ -2,17 +2,25 @@ package com.example.demo.model.response;
 
 import io.soabase.recordbuilder.core.RecordBuilder;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.List;
 
 @RecordBuilder
 public record GetAllTransactionResponse (
         String transactionId,
-        Long productId,
-        String productName,
         String email,
-        int stock,
-        String Status,
-        BigDecimal price,
-        String imageUrl
-){
+        String totalPrice,
+        List<Item> listItem
+)implements Serializable {
+    @RecordBuilder
+    public record Item(
+            Long productId,
+            String productName,
+            int qty,
+            BigDecimal price,
+            String status
+    )implements Serializable{
+
+    }
 }
